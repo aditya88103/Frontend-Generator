@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery — FrontendGen</title>
+    <meta name="description" content="Browse your previously AI-generated frontend projects." />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .gallery-hero {
+            padding: 50px 0 32px;
+            text-align: center;
+        }
+
+        .gallery-hero h1 {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            margin-bottom: 10px;
+        }
+
+        .gallery-hero p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 480px;
+            margin: 0 auto 24px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding-bottom: 80px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+        }
+
+        .project-preview-thumb {
+            width: 100%;
+            height: 180px;
+            background: #0d0d18;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-preview-thumb iframe {
+            width: 200%;
+            height: 200%;
+            transform: scale(0.5);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+        }
+
+        .project-meta {
+            padding: 16px;
+        }
+
+        .project-meta h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .tag-fw {
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            color: #a78bfa;
+        }
+
+        .tag-tpl {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            color: var(--accent-secondary);
+        }
+
+        .project-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-preview-full {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--accent-gradient);
+            border: none;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-preview-full:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .btn-del {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .btn-del:hover {
+            background: rgba(239, 68, 68, 0.16);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 20px;
+            opacity: 0.4;
+        }
+
+        .empty-state h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .count-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            color: #a78bfa;
+        }
+
+        .btn-clear-all {
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        .btn-clear-all:hover {
+            background: rgba(239, 68, 68, 0.16);
+        }
+
+        /* Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .preview-modal.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 1000px;
+            background: #0d0d18;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-iframe {
+            width: 100%;
+            flex: 1;
+            border: none;
+            background: #fff;
+            min-height: 500px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media(max-width:600px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-mesh">
+        <div class="bg-orb"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">✦</div>
+                    <span class="logo-text">FrontendGen</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">⚡ Generator</a>
+                    <a href="gallery.html" class="nav-link active">🖼️ Gallery</a>
+                    <a href="templates.html" class="nav-link">🎨 Templates</a>
+                    <a href="docs.html" class="nav-link">📖 Docs</a>
+                </div>
+                <span class="badge">✦ Gemini 2.0</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="gallery-hero">
+                <div class="hero-eyebrow"><span></span> Saved Projects</div>
+                <h1>Your <span class="gradient-text">Generated Websites</span></h1>
+                <p>All your generated projects are saved locally in your browser. Preview, re-download, or delete them
+                    anytime.</p>
+            </div>
+
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <span id="count-badge" class="count-badge">0 projects</span>
+                </div>
+                <button class="btn-clear-all" onclick="clearAll()">🗑️ Clear All</button>
+            </div>
+
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="empty-state" id="empty-state" style="display:none">
+                <span class="empty-icon">🎨</span>
+                <h2>No projects yet</h2>
+                <p>Go generate your first website using the AI generator!</p>
+                <a href="index.html" class="btn-generate"
+                    style="display:inline-flex;width:auto;padding:14px 28px;text-decoration:none">⚡ Go to Generator</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Preview Modal -->
+    <div class="preview-modal" id="preview-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title">Preview</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <iframe class="modal-iframe" id="modal-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+    <script>
+        const STORAGE_KEY = 'frontendgen_gallery';
+
+        function getProjects() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+            catch { return []; }
+        }
+
+        function saveProjects(arr) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+        }
+
+        function renderGallery() {
+            const projects = getProjects();
+            const grid = document.getElementById('gallery-grid');
+            const empty = document.getElementById('empty-state');
+            const badge = document.getElementById('count-badge');
+
+            badge.textContent = `${projects.length} project${projects.length !== 1 ? 's' : ''}`;
+
+            if (!projects.length) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+
+            grid.innerHTML = projects.slice().reverse().map(p => {
+                const shortPrompt = p.prompt?.length > 60 ? p.prompt.slice(0, 60) + '…' : (p.prompt || 'No prompt');
+                const fwLabel = { html: 'HTML+CSS+JS', react: 'React JSX', vue: 'Vue.js 3', bootstrap: 'Bootstrap 5', tailwind: 'Tailwind CSS' }[p.framework] || p.framework;
+                const tplLabel = (p.template || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                const safePreview = (p.preview || '').replace(/"/g, '&quot;');
+                return `
+          <div class="project-card" id="card-${p.id}">
+            <div class="project-preview-thumb">
+              <iframe srcdoc="${safePreview}" sandbox="allow-scripts"></iframe>
+            </div>
+            <div class="project-meta">
+              <h3 title="${p.prompt || ''}">${shortPrompt}</h3>
+              <div class="project-tags">
+                <span class="tag tag-fw">${fwLabel}</span>
+                <span class="tag tag-tpl">${tplLabel}</span>
+              </div>
+              <div class="project-date">🕐 ${p.timestamp || 'Unknown date'}</div>
+              <div class="project-actions">
+                <button class="btn-preview-full" onclick="openModal(${p.id})">👁️ Full Preview</button>
+                <button class="btn-del" onclick="deleteProject(${p.id})">🗑️</button>
+              </div>
+            </div>
+          </div>`;
+            }).join('');
+        }
+
+        function openModal(id) {
+            const p = getProjects().find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('modal-title').textContent = p.prompt?.slice(0, 50) || 'Preview';
+            document.getElementById('modal-iframe').srcdoc = p.preview || '';
+            document.getElementById('preview-modal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('preview-modal').classList.remove('open');
+            document.getElementById('modal-iframe').srcdoc = '';
+        }
+
+        function deleteProject(id) {
+            const projects = getProjects().filter(p => p.id !== id);
+            saveProjects(projects);
+            renderGallery();
+            showToast('🗑️ Project deleted', 'info');
+        }
+
+        function clearAll() {
+            if (!confirm('Delete all saved projects? This cannot be undone.')) return;
+            saveProjects([]);
+            renderGallery();
+            showToast('All projects cleared', 'info');
+        }
+
+        document.getElementById('preview-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = `<span>${{ success: '✅', error: '❌', info: 'ℹ️' }[type] || 'ℹ️'}</span><span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.classList.add('hiding'); setTimeout(() => t.remove(), 300); }, 3500);
+        }
+
+        renderGallery();
+    </script>
+</body>
+
+</html>

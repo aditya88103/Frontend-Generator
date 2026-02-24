@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docs — FrontendGen</title>
+    <meta name="description" content="How to use FrontendGen — AI-powered frontend generator using Gemini." />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .docs-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 40px;
+            padding-bottom: 80px;
+            align-items: start;
+        }
+
+        .docs-sidebar {
+            position: sticky;
+            top: 80px;
+        }
+
+        .docs-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .docs-nav-section {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding: 12px 0 6px;
+        }
+
+        .docs-nav a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 7px 12px;
+            border-radius: 8px;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .docs-nav a:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        .docs-nav a.active {
+            color: #a78bfa;
+            background: rgba(124, 58, 237, 0.1);
+            border-left: 2px solid var(--accent-primary);
+        }
+
+        .docs-content {
+            min-width: 0;
+        }
+
+        .docs-hero {
+            padding: 50px 0 40px;
+        }
+
+        .docs-hero h1 {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            margin-bottom: 10px;
+        }
+
+        .docs-hero p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 500px;
+        }
+
+        .docs-section {
+            margin-bottom: 56px;
+            scroll-margin-top: 90px;
+        }
+
+        .docs-section h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .docs-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 24px 0 10px;
+            color: var(--text-primary);
+        }
+
+        .docs-section p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .docs-section ul,
+        .docs-section ol {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        .docs-section li {
+            margin-bottom: 6px;
+        }
+
+        .docs-section code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 2px 7px;
+            border-radius: 4px;
+            color: #a78bfa;
+        }
+
+        .step-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .step-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .step-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-body h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .step-body p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .tip-box {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            background: rgba(6, 182, 212, 0.07);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .tip-box .tip-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--accent-secondary);
+            margin-bottom: 6px;
+        }
+
+        .tip-box p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .warn-box {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            background: rgba(245, 158, 11, 0.07);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .warn-box .warn-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--warning);
+            margin-bottom: 6px;
+        }
+
+        .warn-box p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .faq-q {
+            padding: 16px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .faq-q:hover {
+            background: var(--bg-card);
+        }
+
+        .faq-q .faq-icon {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-q .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-a {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 300px;
+            padding: 0 20px 16px;
+        }
+
+        .faq-a p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .prompt-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prompt-ex {
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .prompt-ex:hover {
+            border-color: #a78bfa;
+            color: var(--text-primary);
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .prompt-ex strong {
+            color: #a78bfa;
+            display: block;
+            margin-bottom: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .kbd-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .kbd {
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        @media(max-width:768px) {
+            .docs-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .docs-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-mesh">
+        <div class="bg-orb"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">✦</div>
+                    <span class="logo-text">FrontendGen</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">⚡ Generator</a>
+                    <a href="gallery.html" class="nav-link">🖼️ Gallery</a>
+                    <a href="templates.html" class="nav-link">🎨 Templates</a>
+                    <a href="docs.html" class="nav-link active">📖 Docs</a>
+                </div>
+                <span class="badge">✦ Gemini 2.0</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="docs-hero">
+                <div class="hero-eyebrow"><span></span> Documentation</div>
+                <h1>How to use <span class="gradient-text">FrontendGen</span></h1>
+                <p>Everything you need to know to generate stunning websites with Gemini AI.</p>
+            </div>
+
+            <div class="docs-layout">
+
+                <!-- Sidebar -->
+                <aside class="docs-sidebar">
+                    <nav class="docs-nav">
+                        <div class="docs-nav-section">Getting Started</div>
+                        <a href="#quickstart" class="active">Quick Start</a>
+                        <a href="#api-key">Getting an API Key</a>
+                        <a href="#steps">Step by Step</a>
+                        <div class="docs-nav-section">Features</div>
+                        <a href="#frameworks">Frameworks</a>
+                        <a href="#templates">Templates</a>
+                        <a href="#download">Downloading</a>
+                        <a href="#gallery">Gallery</a>
+                        <div class="docs-nav-section">Tips</div>
+                        <a href="#prompts">Writing Prompts</a>
+                        <a href="#shortcuts">Shortcuts</a>
+                        <a href="#faq">FAQ</a>
+                    </nav>
+                </aside>
+
+                <!-- Content -->
+                <div class="docs-content">
+
+                    <div class="docs-section" id="quickstart">
+                        <h2>⚡ Quick Start</h2>
+                        <p>FrontendGen is a browser-based tool. No installation, no server, no npm. Just open
+                            <code>index.html</code> in any modern browser and start generating.</p>
+                        <div class="tip-box">
+                            <div class="tip-label">💡 Tip</div>
+                            <p>Use Chromium-based browsers (Chrome, Edge, Brave) for best results. Firefox works too but
+                                may have minor CSS differences.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="api-key">
+                        <h2>🔑 Getting a Gemini API Key</h2>
+                        <p>FrontendGen uses the Gemini 2.0 Flash API. You need a free API key from Google AI Studio.</p>
+                        <ol>
+                            <li>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                                    style="color:#a78bfa">aistudio.google.com/app/apikey</a></li>
+                            <li>Sign in with your Google account</li>
+                            <li>Click <strong>Create API Key</strong></li>
+                            <li>Copy the key (starts with <code>AIza...</code>)</li>
+                            <li>Paste it in Step 1 of the generator</li>
+                        </ol>
+                        <div class="warn-box">
+                            <div class="warn-label">⚠️ Security Note</div>
+                            <p>Your API key is stored only in your browser session — it's never sent to any server other
+                                than Google's API. Do not share your key publicly.</p>
+                        </div>
+                        <p>The free tier includes generous quota (60 requests/minute). For heavy use, enable billing in
+                            your Google Cloud project.</p>
+                    </div>
+
+                    <div class="docs-section" id="steps">
+                        <h2>📋 Step by Step</h2>
+                        <div class="step-card">
+                            <div class="step-num">1</div>
+                            <div class="step-body">
+                                <h4>Paste your Gemini API key</h4>
+                                <p>Enter your key in the API key field. It will be auto-filled if you've used the app
+                                    before this session.</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">2</div>
+                            <div class="step-body">
+                                <h4>Describe your website</h4>
+                                <p>Type a detailed prompt. Mention sections, content, colors, and the vibe you want. The
+                                    more specific, the better the output.</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">3</div>
+                            <div class="step-body">
+                                <h4>Select a framework</h4>
+                                <p>Choose between HTML/CSS/JS, React, Vue, Bootstrap, or Tailwind. Each generates
+                                    different file types.</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">4</div>
+                            <div class="step-body">
+                                <h4>Pick a visual style</h4>
+                                <p>Choose a template (Modern Dark, Glassmorphism, Minimal Light, Neon Cyberpunk,
+                                    Corporate). This controls the design vibe.</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-num">5</div>
+                            <div class="step-body">
+                                <h4>Generate &amp; download</h4>
+                                <p>Click Generate (or press <code>Ctrl+Enter</code>). View the live preview, inspect
+                                    code in tabs, then download files individually or as a ZIP.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="frameworks">
+                        <h2>⚙️ Frameworks Explained</h2>
+                        <h3>🌐 HTML + CSS + JS</h3>
+                        <p>Generates 3 separate files: <code>index.html</code>, <code>style.css</code>,
+                            <code>script.js</code>. Open <code>index.html</code> directly in browser. No build step
+                            needed.</p>
+                        <h3>⚛️ React JSX</h3>
+                        <p>Generates <code>App.jsx</code>, <code>App.css</code>, and <code>index.html</code>. Uses React
+                            18 + Babel Standalone via CDN. Open <code>index.html</code> directly — no <code>npm</code>
+                            needed.</p>
+                        <h3>💚 Vue.js 3</h3>
+                        <p>Generates <code>App.vue</code>, <code>main.js</code>, <code>index.html</code>. Vue 3 via CDN,
+                            Composition API. Just open <code>index.html</code>.</p>
+                        <h3>🅱️ Bootstrap 5</h3>
+                        <p>Uses Bootstrap 5 grid, components, and utilities via CDN. Custom overrides in
+                            <code>custom.css</code>. Great for rapid professional UI.</p>
+                        <h3>🌊 Tailwind CSS</h3>
+                        <p>All styling done with Tailwind utility classes via CDN. No CSS file generated. Smallest
+                            footprint. Fastest to load.</p>
+                    </div>
+
+                    <div class="docs-section" id="download">
+                        <h2>⬇️ Downloading Your Project</h2>
+                        <p>After generating, you'll see individual download buttons for each file type, plus a
+                            <strong>Download ZIP</strong> button that bundles everything with a README:</p>
+                        <ul>
+                            <li>Individual buttons: Download one file at a time</li>
+                            <li><strong>ZIP</strong>: Downloads all files + a <code>README.md</code> with project info
+                            </li>
+                            <li>Code tabs: View and copy any file's code directly</li>
+                        </ul>
+                        <div class="tip-box">
+                            <div class="tip-label">💡 Tip</div>
+                            <p>For React/Vue CDN projects, open <code>index.html</code> directly. For Tailwind, internet
+                                is needed to load the CDN. For plain HTML — works fully offline!</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="gallery">
+                        <h2>🖼️ Gallery (Project History)</h2>
+                        <p>Every project you generate is automatically saved to your browser's
+                            <strong>localStorage</strong>. Visit the <a href="gallery.html"
+                                style="color:#a78bfa">Gallery page</a> to:</p>
+                        <ul>
+                            <li>Browse all previously generated projects with thumbnail previews</li>
+                            <li>Open a full-screen modal preview of any project</li>
+                            <li>Delete individual projects or clear all at once</li>
+                        </ul>
+                        <div class="warn-box">
+                            <div class="warn-label">⚠️ Note</div>
+                            <p>Projects are stored locally in your browser. Clearing browser data or switching browsers
+                                will remove them. Maximum 20 projects are kept at once.</p>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="prompts">
+                        <h2>✍️ Writing Great Prompts</h2>
+                        <p>The quality of the output heavily depends on your prompt. Here are examples from vague to
+                            great:</p>
+                        <div class="prompt-examples">
+                            <div class="prompt-ex" onclick="copyPrompt(this)">
+                                <strong>❌ Too Vague</strong>
+                                Make a portfolio site.
+                            </div>
+                            <div class="prompt-ex" onclick="copyPrompt(this)">
+                                <strong>✅ Good</strong>
+                                Create a portfolio website for a freelance photographer. Include a hero with a large
+                                image, a 3-column gallery grid, an about me section with a photo and bio, and a contact
+                                form with name, email, and message fields.
+                            </div>
+                            <div class="prompt-ex" onclick="copyPrompt(this)">
+                                <strong>🚀 Excellent</strong>
+                                Build a SaaS landing page for an AI writing assistant called "WriteAI". Include: (1)
+                                hero with headline "Write 10x faster with AI", CTA button, and animated background, (2)
+                                feature grid with 6 icons, (3) pricing section with 3 tiers (Free/Pro/Enterprise), (4)
+                                testimonials carousel, (5) FAQ accordion, (6) footer with newsletter signup.
+                            </div>
+                            <div class="prompt-ex" onclick="copyPrompt(this)">
+                                <strong>🎨 E-commerce</strong>
+                                Design a homepage for a premium sneaker brand called "APEX". Hero with full-width video
+                                background, featured products section with hover effects, brand story section, size
+                                guide table, customer reviews grid, and newsletter subscription form.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="shortcuts">
+                        <h2>⌨️ Keyboard Shortcuts</h2>
+                        <div class="keyboard-row">
+                            <div class="kbd-item"><span class="kbd">Ctrl + Enter</span> Generate frontend</div>
+                            <div class="kbd-item"><span class="kbd">Esc</span> Close modal (Gallery)</div>
+                        </div>
+                    </div>
+
+                    <div class="docs-section" id="faq">
+                        <h2>❓ FAQ</h2>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">Why is the generated code not perfect?<span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-a">
+                                <p>Gemini AI generates code based on your prompt and style guide, but like all
+                                    generative AI it's not always perfect. Refine your prompt with more specific
+                                    details. You can also edit the generated code manually.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">Can I re-generate with a different style without changing my prompt?<span
+                                    class="faq-icon">+</span></div>
+                            <div class="faq-a">
+                                <p>Yes! Just change the template style or framework, then click Generate again. The same
+                                    prompt will be used with the new style guide. Each generation is saved separately in
+                                    the Gallery.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">Does it work offline?<span class="faq-icon">+</span></div>
+                            <div class="faq-a">
+                                <p>The generator itself requires internet to call the Gemini API. However, plain
+                                    HTML+CSS+JS generated files work fully offline. React, Vue, Bootstrap, and Tailwind
+                                    require internet to load their CDN scripts.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">How do I use the React output?<span class="faq-icon">+</span></div>
+                            <div class="faq-a">
+                                <p>Open <code>index.html</code> directly in your browser. It loads React and Babel via
+                                    CDN, then compiles and runs <code>App.jsx</code>. No npm or build step needed. For
+                                    production use, you'd set up a proper Vite/CRA project and copy the JSX code.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">Can I use this to build production sites?<span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-a">
+                                <p>The generated code is a great starting point! For production, you should review and
+                                    customize the code, add proper security, integrate a real backend, and optimize
+                                    assets. Think of it as an AI-powered design scaffold.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-q">Why does Gemini sometimes mix CSS into HTML?<span
+                                    class="faq-icon">+</span></div>
+                            <div class="faq-a">
+                                <p>LLMs occasionally deviate from the exact output format. The app has a fallback parser
+                                    that extracts inline <code>&lt;style&gt;</code> and <code>&lt;script&gt;</code> tags
+                                    from HTML and splits them into separate files automatically.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div><!-- /docs-content -->
+            </div><!-- /docs-layout -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Built with ✦ using <a href="https://deepmind.google/technologies/gemini/" target="_blank">Gemini AI</a>
+                &nbsp;·&nbsp; FrontendGen 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(el) {
+            el.classList.toggle('open');
+        }
+        function copyPrompt(el) {
+            const text = el.querySelector('strong').nextSibling?.textContent?.trim() || el.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                el.style.borderColor = '#a78bfa';
+                setTimeout(() => el.style.borderColor = '', 1500);
+            }).catch(() => { });
+        }
+        // Highlight active sidebar link on scroll
+        const sections = document.querySelectorAll('.docs-section');
+        const navLinks = document.querySelectorAll('.docs-nav a');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+            navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+        }, { passive: true });
+    </script>
+</body>
+
+</html>

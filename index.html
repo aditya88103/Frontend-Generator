@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FrontendGen — AI Website Builder</title>
+  <meta name="description"
+    content="Describe your website. AI generates multiple designs. Pick one. Edit it. Download." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="config.js"></script>
+</head>
+
+
+<body>
+
+  <!-- ═══════════════════════════════════════════
+     BACKGROUND
+     ═══════════════════════════════════════════ -->
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-orb orb3"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     PROGRESS BAR
+     ═══════════════════════════════════════════ -->
+  <div id="progress-wrap">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     NAVBAR
+     ═══════════════════════════════════════════ -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">✦</div>
+      <span class="logo-text">FrontendGen</span>
+    </a>
+    <span class="powered-badge">✦ Gemini 2.0 Flash</span>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+     SCREEN 1 — PROMPT INPUT
+     ═══════════════════════════════════════════ -->
+  <div id="screen-prompt" class="screen active">
+    <div class="prompt-screen-inner">
+
+      <!-- Hero Text -->
+      <div class="prompt-hero">
+        <div class="prompt-eyebrow">
+          <span class="eyebrow-dot"></span>
+          AI builds it, you pick the look
+        </div>
+        <h1 class="prompt-headline">
+          What do you want<br />
+          <span class="grad-text">to build today?</span>
+        </h1>
+        <p class="prompt-sub">
+          Describe your website in plain English. We'll generate 4 unique designs instantly.
+        </p>
+      </div>
+
+      <!-- Prompt Box -->
+      <div class="prompt-box">
+        <textarea id="main-prompt" class="prompt-textarea" maxlength="2000"
+          placeholder="e.g. A portfolio for a UX designer with a hero section, project gallery, about me, and contact form..."
+          rows="4" aria-label="Describe your website"></textarea>
+        <div class="prompt-footer">
+          <span id="prompt-counter" class="prompt-counter">0 / 2000</span>
+          <button class="btn-random" onclick="fillRandom()" type="button">🎲 Random idea</button>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button class="btn-generate" id="gen-btn" onclick="startGeneration()">
+        <span class="gen-btn-icon">✦</span>
+        <span class="gen-btn-text">Generate</span>
+        <div class="gen-btn-spinner"></div>
+        <span class="gen-btn-hint">Ctrl + Enter</span>
+      </button>
+
+      <!-- Examples -->
+      <div class="examples-row">
+        <span class="examples-label">Try:</span>
+        <button class="example-chip"
+          onclick="setPrompt('SaaS landing page for an AI tool with features, pricing, and FAQ')">SaaS landing
+          page</button>
+        <button class="example-chip"
+          onclick="setPrompt('Photography portfolio with gallery grid, about page, and booking form')">Photography
+          portfolio</button>
+        <button class="example-chip"
+          onclick="setPrompt('Restaurant website with menu, gallery, and reservations form')">Restaurant site</button>
+        <button class="example-chip"
+          onclick="setPrompt('Crypto/DeFi project landing with tokenomics, roadmap, and team')">Crypto landing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     SCREEN 2 — TEMPLATE PICKER
+     ═══════════════════════════════════════════ -->
+  <div id="screen-pick" class="screen">
+    <div class="pick-container">
+
+      <!-- Header -->
+      <div class="pick-header">
+        <button class="btn-back" onclick="goBack('prompt')">← Back</button>
+        <div class="pick-header-center">
+          <h2 class="pick-title">Choose your design</h2>
+          <p class="pick-sub" id="pick-sub-prompt"></p>
+        </div>
+        <div class="pick-header-right"></div><!-- spacer -->
+      </div>
+
+      <!-- Generation Status (while loading) -->
+      <div id="pick-loading" class="pick-loading">
+        <div class="gen-grid-loading">
+          <div class="gen-card-skeleton">
+            <div class="skel-header">
+              <div class="skel-bar"></div>
+              <div class="skel-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="skel-body"></div>
+            <div class="skel-footer">
+              <div class="skel-line w60"></div>
+              <div class="skel-line w40"></div>
+            </div>
+          </div>
+          <div class="gen-card-skeleton" style="animation-delay:0.15s">
+            <div class="skel-header">
+              <div class="skel-bar"></div>
+              <div class="skel-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="skel-body"></div>
+            <div class="skel-footer">
+              <div class="skel-line w70"></div>
+              <div class="skel-line w50"></div>
+            </div>
+          </div>
+          <div class="gen-card-skeleton" style="animation-delay:0.3s">
+            <div class="skel-header">
+              <div class="skel-bar"></div>
+              <div class="skel-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="skel-body"></div>
+            <div class="skel-footer">
+              <div class="skel-line w80"></div>
+              <div class="skel-line w30"></div>
+            </div>
+          </div>
+          <div class="gen-card-skeleton" style="animation-delay:0.45s">
+            <div class="skel-header">
+              <div class="skel-bar"></div>
+              <div class="skel-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="skel-body"></div>
+            <div class="skel-footer">
+              <div class="skel-line w55"></div>
+              <div class="skel-line w45"></div>
+            </div>
+          </div>
+        </div>
+        <p class="loading-status" id="loading-status-text">✨ Generating 4 unique designs...</p>
+      </div>
+
+      <!-- Template Cards Grid -->
+      <div id="template-cards" class="template-cards-grid" style="display:none">
+        <!-- dynamically injected -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     SCREEN 3 — EDITOR
+     ═══════════════════════════════════════════ -->
+  <div id="screen-editor" class="screen">
+
+    <!-- Editor Topbar -->
+    <div class="editor-topbar">
+      <button class="btn-back-sm" onclick="goBack('pick')">← Designs</button>
+      <div class="editor-title-area">
+        <span class="editor-template-name" id="editor-tpl-name"></span>
+        <span class="editor-status" id="editor-status"></span>
+      </div>
+      <div class="editor-topbar-actions">
+        <button class="tbr-btn" onclick="openInTab()" title="Open in new tab">↗ New Tab</button>
+        <button class="tbr-btn tbr-btn-full" onclick="toggleFullscreen()" id="fullscreen-btn">⊞ Fullscreen</button>
+        <button class="tbr-btn tbr-btn-dl" onclick="downloadZip()" id="dl-zip-btn">📦 Download ZIP</button>
+      </div>
+    </div>
+
+    <!-- Editor Body -->
+    <div class="editor-body">
+
+      <!-- Left: Preview Panel -->
+      <div class="editor-preview-panel" id="preview-panel">
+
+        <!-- Browser chrome -->
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <span class="bdot red"></span>
+            <span class="bdot yellow"></span>
+            <span class="bdot green"></span>
+          </div>
+          <div class="browser-addr" id="browser-addr">preview://your-website/index.html</div>
+          <div class="browser-actions">
+            <button class="bact-btn" onclick="refreshPreview()" title="Refresh">↺</button>
+          </div>
+        </div>
+
+        <!-- Iframe -->
+        <iframe id="preview-iframe" class="preview-iframe"
+          sandbox="allow-scripts allow-same-origin allow-modals allow-forms" title="Live Preview"></iframe>
+      </div>
+
+      <!-- Right: Code + Editor Panel -->
+      <div class="editor-right-panel">
+
+        <!-- Tab Bar -->
+        <div class="editor-tab-row">
+          <div class="editor-tab-bar" id="code-tab-bar"></div>
+          <button class="copy-btn" id="copy-btn" onclick="copyCode()">📋 Copy</button>
+        </div>
+
+        <!-- Code Display -->
+        <div class="editor-code-wrap">
+          <pre class="editor-code-block" id="code-display">// Select a template to view code</pre>
+          <div class="code-meta" id="code-meta"></div>
+        </div>
+
+        <!-- Edit / Request Changes -->
+        <div class="edit-panel">
+          <div class="edit-panel-header">
+            <span class="edit-panel-title">✏️ Request Changes</span>
+            <span class="edit-hint">Describe what to change, Gemini will update the code</span>
+          </div>
+          <div class="edit-input-row">
+            <textarea id="edit-prompt" class="edit-textarea" rows="3"
+              placeholder="e.g. Make the hero section taller, change primary color to orange, add a testimonials section..."></textarea>
+            <button class="btn-apply-changes" id="apply-btn" onclick="applyChanges()">
+              <span class="apply-icon">✦</span>
+              <span class="apply-text">Apply</span>
+              <div class="apply-spinner"></div>
+            </button>
+          </div>
+          <div class="edit-presets">
+            <button class="preset-chip" onclick="applyPreset('Make the color scheme blue and professional')">→ Blue
+              theme</button>
+            <button class="preset-chip" onclick="applyPreset('Add a smooth fade-in animation to all sections')">→ Add
+              animations</button>
+            <button class="preset-chip" onclick="applyPreset('Make it fully responsive for mobile devices')">→
+              Mobile-first</button>
+            <button class="preset-chip" onclick="applyPreset('Add a dark mode toggle button')">→ Dark mode
+              toggle</button>
+          </div>
+        </div>
+
+        <!-- Download Options -->
+        <div class="download-panel">
+          <div class="download-panel-header">⬇️ Download Files</div>
+          <div class="download-btns-row" id="download-btns">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div><!-- /editor-right-panel -->
+    </div><!-- /editor-body -->
+  </div><!-- /screen-editor -->
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
